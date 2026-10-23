@@ -847,6 +847,22 @@ class HospitalStore {
     const def = createDefaultState();
     this.saveState(def);
   }
+
+  addSms({ to, token, message }) {
+    const sms = {
+      id: 'sms_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      to: to || '9876543210',
+      token,
+      message,
+      sentAt: this.getSimTime(),
+    };
+    const next = {
+      ...this.state,
+      smsInbox: [sms, ...this.state.smsInbox],
+    };
+    this.saveState(next);
+    return sms;
+  }
 }
 
 // Global Singleton Instance
@@ -943,6 +959,7 @@ export function useHospital() {
   const setSpeed = useCallback((speed) => hospitalStore.setSpeed(speed), []);
   const resetAll = useCallback(() => hospitalStore.resetAll(), []);
   const estimateWaitFn = useCallback((tok) => hospitalStore.estimateWait(tok), []);
+  const addSms = useCallback((args) => hospitalStore.addSms(args), []);
 
   const recallPatient = useCallback((deptId) => {
     sounder.playChime();
@@ -1023,6 +1040,7 @@ export function useHospital() {
     raiseUrgentHelpAlert,
     dismissUrgentAlert,
     loadKamlaDemo,
+    addSms,
   };
 }
 
