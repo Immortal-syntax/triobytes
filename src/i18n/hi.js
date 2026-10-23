@@ -12,9 +12,40 @@ export const hi = {
   'app.subtitle': 'अस्पताल में आपका मददगार साथी',
 
   // Educational 1-Line Definitions (Mandatory safety & clarity rule)
-  'def.opd': 'ओपीडी (बाह्य रोगी विभाग): जहाँ आप अस्पताल में भर्ती हुए बिना डॉक्टर को दिखाते हैं।',
-  'def.token': 'टोकन: डॉक्टर से मिलने के लिए क्रम से आपका बारी नंबर।',
-  'def.casualty': 'आपातकालीन / कैजुअल्टी: जीवन या अचानक गंभीर खतरे के समय तुरंत इलाज के लिए।',
+  'def.opd': 'ओपीडी (OPD) का अर्थ है भर्ती हुए बिना डॉक्टर से परामर्श लेना।',
+  'def.token': 'टोकन का अर्थ है डॉक्टर से मिलने के लिए आपकी क्रमवार बारी का नंबर।',
+  'def.casualty': 'कैजुअल्टी / आपातकालीन का अर्थ है अचानक गंभीर स्थिति में तुरंत इलाज का कमरा।',
+
+  // Home Screen 4 Big Buttons
+  'home.registerBtn': 'पंजीकरण (Register)',
+  'home.registerTitle': '1. नया ओपीडी टोकन बनाएँ',
+  'home.registerDesc': 'डॉक्टर को दिखाने के लिए नया टोकन पाएँ। सिर्फ़ 1 मिनट लगेगा।',
+  'home.haveSlipBtn': 'मेरे पास पर्ची है',
+  'home.haveSlipTitle': '2. मेरे पास पर्ची है',
+  'home.haveSlipDesc': 'देखें कि आपकी बारी से पहले कितने लोग बाकी हैं और कब अंदर जाना है।',
+  'home.findPlaceBtn': 'कमरा या रास्ता ढूँढें',
+  'home.findPlaceTitle': '3. कमरा या रास्ता ढूँढें (नक्शा)',
+  'home.findPlaceDesc': 'कमरों, लिफ्ट, ढलान (रैम्प), पीने का पानी और शौचालय तक का आसान नक्शा।',
+  'home.emergencyBtn': 'आपातकालीन (Emergency)',
+  'home.emergencyTitle': '4. आपातकालीन / कैजुअल्टी',
+  'home.emergencyDesc': 'अचानक गंभीर तकलीफ़, दुर्घटना या दर्द के लिए। बिना इंतज़ार के सीधे ग्राउंड फ़्लोर कमरा E1 जाएँ।',
+
+  // Settings
+  'nav.settings': 'सेटिंग',
+  'settings.title': 'सुगमता एवं ऐप सेटिंग',
+  'settings.languageLabel': 'भाषा चुनें / Language',
+  'settings.textSizeLabel': 'अक्षरों का आकार',
+  'settings.size1': '18px (सामान्य)',
+  'settings.size2': '22px (बड़ा)',
+  'settings.size3': '26px (बहुत बड़ा)',
+  'settings.highContrastLabel': 'उच्च कंट्रास्ट मोड (High Contrast)',
+  'settings.highContrastDesc': 'काले बैकग्राउंड और चमकीले अक्षरों में साफ़ दिखने वाला डिस्प्ले।',
+  'settings.readAloudLabel': 'आवाज़ में पढ़कर सुनाएँ (Read Aloud)',
+  'settings.readAloudDesc': 'स्क्रीन खोलने पर निर्देश अपने-आप बोलकर सुनाए जाएँ।',
+  'settings.avoidStairsLabel': 'सीढ़ियों से बचें (लिफ्ट व रैम्प का रास्ता)',
+  'settings.avoidStairsDesc': 'रास्ता हमेशा लिफ्ट और ढलान (रैम्प) से दिखाएगा। घुटने के दर्द या व्हीलचेयर के लिए उत्तम।',
+  'settings.assistedModeLabel': 'सहायक मोड (Assisted Mode)',
+  'settings.assistedModeDesc': 'बुजुर्गों के लिए बड़े बटन और आसान स्क्रीन निर्देश।',
 
   // Top Accessibility Bar & Safety Actions
   'a11y.textSize': 'अक्षर का आकार',

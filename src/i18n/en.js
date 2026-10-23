@@ -12,9 +12,40 @@ export const en = {
   'app.subtitle': 'Your friendly guide at the hospital',
 
   // Educational 1-Line Definitions (Mandatory safety & clarity rule)
-  'def.opd': 'OPD (Out-Patient Department): where you see a doctor without staying overnight in hospital.',
-  'def.token': 'Token: Your turn number to see the doctor in order.',
-  'def.casualty': 'Emergency / Casualty: For immediate care when life or health is in sudden danger.',
+  'def.opd': 'OPD (Out-Patient Department) means you see a doctor without staying overnight in the hospital.',
+  'def.token': 'Token means your turn number to see the doctor in orderly sequence.',
+  'def.casualty': 'Emergency / Casualty means the emergency room for immediate, urgent care.',
+
+  // Home Screen 4 Big Buttons
+  'home.registerBtn': 'Register',
+  'home.registerTitle': '1. Register for OPD',
+  'home.registerDesc': 'Get your turn token to consult a doctor today. Takes 1 minute.',
+  'home.haveSlipBtn': 'I Have My Slip',
+  'home.haveSlipTitle': '2. I Have My Slip',
+  'home.haveSlipDesc': 'Check how many patients are ahead of you and when to go in.',
+  'home.findPlaceBtn': 'Find a Place',
+  'home.findPlaceTitle': '3. Find a Place (Map)',
+  'home.findPlaceDesc': 'Directions to clinics, lifts, ramps, drinking water, and washrooms.',
+  'home.emergencyBtn': 'Emergency',
+  'home.emergencyTitle': '4. Emergency / Casualty',
+  'home.emergencyDesc': 'Immediate care for severe pain, accident, or distress. Go to Ground Floor Room E1 now.',
+
+  // Settings
+  'nav.settings': 'Settings',
+  'settings.title': 'Accessibility & App Settings',
+  'settings.languageLabel': 'Choose Language / भाषा',
+  'settings.textSizeLabel': 'Text Size',
+  'settings.size1': '18px (Standard)',
+  'settings.size2': '22px (Large)',
+  'settings.size3': '26px (Extra Large)',
+  'settings.highContrastLabel': 'High Contrast Mode',
+  'settings.highContrastDesc': 'High contrast black and bright borders for maximum clarity.',
+  'settings.readAloudLabel': 'Read Aloud by Default',
+  'settings.readAloudDesc': 'Automatically speaks aloud instructions when opening a screen.',
+  'settings.avoidStairsLabel': 'Avoid Stairs (Prefer Ramps & Lifts)',
+  'settings.avoidStairsDesc': 'Navigation routes will avoid all stairs. Best for knee pain, walking sticks, or wheelchairs.',
+  'settings.assistedModeLabel': 'Assisted Mode (Elderly / Slow Navigation)',
+  'settings.assistedModeDesc': 'Enlarges interactive elements and adds extra comforting guidance prompts.',
 
   // Top Accessibility Bar & Safety Actions
   'a11y.textSize': 'Text Size',

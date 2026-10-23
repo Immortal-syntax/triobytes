@@ -43,7 +43,7 @@ export default function RegistrationPage() {
     e.preventDefault();
     if (!validate()) return;
 
-    registerPatient({
+    const newToken = registerPatient({
       name,
       age,
       gender,
@@ -51,7 +51,7 @@ export default function RegistrationPage() {
       avoidStairs,
     });
 
-    navigate('/slip');
+    navigate(`/slip/${newToken.tokenCode}`);
   };
 
   return (

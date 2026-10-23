@@ -8,16 +8,19 @@
     font-family: 'Mukta', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
+  html.text-size-1,
   html.text-normal {
     font-size: 18px;
   }
 
+  html.text-size-2,
   html.text-large {
-    font-size: 21px;
+    font-size: 22px;
   }
 
+  html.text-size-3,
   html.text-xlarge {
-    font-size: 25px;
+    font-size: 26px;
   }
 
   /* Strict WCAG AA High Contrast Mode */
