@@ -210,7 +210,7 @@ export function HospitalProvider({ children }) {
   }, []);
 
   // Register a new patient
-  const registerPatient = useCallback(({ name, age, gender, deptId, avoidStairs }) => {
+  const registerPatient = useCallback(({ name, age, gender, deptId, avoidStairs, mobile }) => {
     synth.init();
     const dept = getDepartmentById(deptId);
     const currentQ = queues[deptId] || { currentToken: 1, doctorStatus: 'available', tokens: [] };
@@ -230,6 +230,7 @@ export function HospitalProvider({ children }) {
       patientName: name.trim(),
       age: Number(age),
       gender: gender || 'female',
+      mobile: mobile ? mobile.trim() : '',
       deptId,
       room: dept.room,
       floor: dept.floor,
