@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useI18n } from '../context/I18nContext.jsx';
 import { useHospital } from '../context/HospitalContext.jsx';
 import { DEPARTMENTS } from '../data/departments.js';
@@ -14,6 +14,8 @@ import {
   BoneIcon,
   EyeIcon,
   ClockIcon,
+  AlertIcon,
+  EmergencyCrossIcon,
 } from '../components/common/Icons.jsx';
 
 export default function RegistrationPage() {
@@ -267,6 +269,24 @@ export default function RegistrationPage() {
           </div>
         </label>
       </section>
+
+      {/* Emergency Warning: if feeling very unwell, skip registration */}
+      <div className="bg-emergency-50 dark:bg-emergency-950/40 border-2 border-emergency-400 dark:border-emergency-600 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <EmergencyCrossIcon className="w-8 h-8 text-emergency-600 flex-shrink-0 animate-pulse" />
+          <p className="text-base font-bold text-emergency-900 dark:text-emergency-100">
+            {t('emergency.urgentNotice')}
+          </p>
+        </div>
+        <Link
+          id="btn-reg-emergency-link"
+          to="/emergency"
+          className="min-h-[56px] px-5 py-2 bg-emergency-600 hover:bg-emergency-700 active:bg-emergency-800 text-white font-extrabold text-lg rounded-xl flex items-center justify-center gap-2 focus:ring-4 focus:ring-amber-300 focus:outline-none flex-shrink-0 transition-transform active:scale-95"
+        >
+          <AlertIcon className="w-5 h-5" />
+          <span>{t('urgentHelp.button')}</span>
+        </Link>
+      </div>
 
       {/* Submit Action */}
       <div>
