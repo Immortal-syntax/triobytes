@@ -1,21 +1,55 @@
 /**
  * OPD Saathi – src/lib/routing.js
  *
- * Exports three public functions:
- *   findRoute(fromId, toId, options)  → route object
- *   buildDirections(route, t)         → array of human-readable step strings
- *   nearestOf(fromId, type)           → place object or null
+ * Hospital routing logic & navigation engine:
+ *   1. findRoute(fromId, toId, { avoidStairs })  → Dijkstra shortest path route object
+ *   2. buildDirections(route, t)                 → Rich human-readable step-by-step directions
+ *   3. nearestOf(fromId, type, { avoidStairs })  → Nearest facility / place lookup
  *
- * Designed to work in both browser (ESM) and Node.js (for test-routing.js).
+ * Works in both browser (ESM) and Node.js environments.
  */
 
 import { places, edges } from '../data/hospital.js';
+import { en } from '../i18n/en.js';
 
-// ─── Internal helpers ───────────────────────────────────────────────────────
+// Legacy ID mapping for backward compatibility
+const LEGACY_ID_MAP = {
+  gate_1:      'g_entrance',
+  casualty:    'g_casualty',
+  reg_desk:    'g_reg_counters',
+  g_med_1:     'g_lobby',
+  g_med_2:     'g_water',
+  pharmacy:    'g_pharmacy',
+  g_water:     'g_water',
+  g_washroom:  'g_toilets',
+  g_lift:      'g_lift',
+  ortho_101:   'f1_room_5',
+  ortho_102:   'f1_room_5',
+  eye_103:     'f1_room_7',
+  ent_104:     'f1_room_6',
+  paed_105:    'f1_room_3',
+  f1_water:    'f1_waiting_a',
+  f1_washroom: 'f1_toilets',
+  f1_lift:     'f1_lift',
+  gynae_201:   'f2_nurse_station',
+  skin_203:    'f2_nurse_station',
+  dental_204:  'f2_nurse_station',
+  lab_205:     'f2_nurse_station',
+};
 
 /**
- * Build a bidirectional adjacency list from edges.
- * When avoidStairs is true, any edge with usesStairs === true is ignored.
+ * Resolve node ID (canonical or legacy) to canonical place ID.
+ */
+function resolveId(id) {
+  if (!id) return null;
+  if (places[id]) return id;
+  if (LEGACY_ID_MAP[id] && places[LEGACY_ID_MAP[id]]) return LEGACY_ID_MAP[id];
+  return id;
+}
+
+/**
+ * Build undirected adjacency list from edges.
+ * If avoidStairs is true, any edge where usesStairs === true is skipped.
  */
 function buildAdj(avoidStairs) {
   const adj = {};
@@ -31,8 +65,8 @@ function buildAdj(avoidStairs) {
 
 /**
  * Dijkstra's algorithm over the hospital graph.
- * Returns { dist, prev } where dist[id] is the shortest distance from `src`
- * and prev[id] is the previous node ID on the shortest path.
+ * Returns { dist, prev } mapping where dist[id] is distance from src
+ * and prev[id] is previous place ID along shortest path.
  */
 function dijkstra(src, adj) {
   const dist    = {};
@@ -65,20 +99,7 @@ function dijkstra(src, adj) {
 }
 
 /**
- * Reconstruct path array from prev map.
- */
-function reconstructPath(prev, dest) {
-  const path = [];
-  let cur = dest;
-  while (cur !== undefined) {
-    path.unshift(cur);
-    cur = prev[cur];
-  }
-  return path;
-}
-
-/**
- * Find the edge connecting two adjacent place IDs.
+ * Find the connecting edge between two adjacent places.
  */
 function findEdge(fromId, toId) {
   return edges.find(
@@ -86,40 +107,55 @@ function findEdge(fromId, toId) {
   ) || null;
 }
 
-// ─── Public API ─────────────────────────────────────────────────────────────
-
 /**
  * findRoute(fromId, toId, { avoidStairs })
  *
- * Runs Dijkstra from `fromId` to `toId`.
+ * Runs Dijkstra's algorithm to compute the shortest accessible route.
  *
- * Returns:
+ * @param {string} fromId - Starting place ID (e.g. 'g_entrance')
+ * @param {string} toId - Destination place ID (e.g. 'f1_room_3')
+ * @param {Object} options - Routing options { avoidStairs: boolean }
+ * @returns {Object} Route result:
  *   {
- *     found:        boolean,
- *     steps:        string[],          // ordered place IDs
- *     totalMetres:  number,
- *     floorsVisited: number[],
- *     segments:     EdgeSegment[],     // edges on the path
+ *     found: boolean,
+ *     steps: string[],        // Ordered place IDs
+ *     totalMetres: number,    // Sum of edge metres
+ *     floorsVisited: number[],// Unique floor levels visited
+ *     segments: Object[]      // Edge objects traversed
  *   }
- *
- * If `avoidStairs` is true, edges with usesStairs === true are excluded.
  */
 export function findRoute(fromId, toId, { avoidStairs = false } = {}) {
   const NOT_FOUND = { found: false, steps: [], totalMetres: 0, floorsVisited: [], segments: [] };
 
-  if (!places[fromId] || !places[toId]) return NOT_FOUND;
-  if (fromId === toId) {
-    return { found: true, steps: [fromId], totalMetres: 0, floorsVisited: [places[fromId].floor], segments: [] };
+  const src = resolveId(fromId);
+  const dst = resolveId(toId);
+
+  if (!src || !dst || !places[src] || !places[dst]) return NOT_FOUND;
+
+  if (src === dst) {
+    return {
+      found: true,
+      steps: [src],
+      totalMetres: 0,
+      floorsVisited: [places[src].floor],
+      segments: [],
+    };
   }
 
   const adj = buildAdj(avoidStairs);
-  const { dist, prev } = dijkstra(fromId, adj);
+  const { dist, prev } = dijkstra(src, adj);
 
-  if (!isFinite(dist[toId])) return NOT_FOUND;
+  if (!isFinite(dist[dst])) return NOT_FOUND;
 
-  const steps = reconstructPath(prev, toId);
+  // Reconstruct path array
+  const steps = [];
+  let cur = dst;
+  while (cur !== undefined) {
+    steps.unshift(cur);
+    cur = prev[cur];
+  }
 
-  // Build segments (edge metadata for each hop)
+  // Build traversed edge segments
   const segments = [];
   let totalMetres = 0;
   for (let i = 0; i < steps.length - 1; i++) {
@@ -132,26 +168,55 @@ export function findRoute(fromId, toId, { avoidStairs = false } = {}) {
 
   const floorsVisited = [...new Set(steps.map(id => places[id]?.floor).filter(f => f !== undefined))];
 
-  return { found: true, steps, totalMetres, floorsVisited, segments };
+  return {
+    found: true,
+    steps,
+    totalMetres,
+    floorsVisited,
+    segments,
+  };
+}
+
+/**
+ * Default fallback translation helper if t is omitted or not provided.
+ */
+function defaultT(key, vars = {}) {
+  let str = en[key] !== undefined ? en[key] : key;
+  if (vars && typeof vars === 'object') {
+    for (const [k, v] of Object.entries(vars)) {
+      str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+    }
+  }
+  return str;
 }
 
 /**
  * buildDirections(route, t)
  *
- * Converts a route object (from findRoute) into an array of human-readable
- * direction strings using the i18n `t(key, vars)` function.
+ * Converts a route object from findRoute into human-readable, landmark-rich
+ * directions using i18n templates and per-edge turn & door hints stored in hospital.js.
  *
- * Returns string[].
+ * Example:
+ *   "Take the lift to the first floor. Turn right into Waiting Hall A.
+ *    OPD Room 3 is the third door on your left, opposite the blue chairs."
+ *
+ * @param {Object} route - Route returned by findRoute
+ * @param {Function} [t] - Translation function t(key, vars)
+ * @returns {string[]} Ordered human navigation steps
  */
-export function buildDirections(route, t) {
-  if (!route.found || route.steps.length === 0) return [];
+export function buildDirections(route, t = defaultT) {
+  if (!route || !route.found || !route.steps || route.steps.length === 0) {
+    return [];
+  }
 
+  const safeT = typeof t === 'function' ? t : defaultT;
   const directions = [];
 
-  // Step 0: starting point
+  // Step 0: Starting location
   const startPlace = places[route.steps[0]];
   if (startPlace) {
-    directions.push(t('dir.startAt', { from: t(startPlace.nameKey) }));
+    const startName = safeT(startPlace.nameKey) || startPlace.id;
+    directions.push(safeT('dir.startAt', { from: startName }));
   }
 
   for (let i = 1; i < route.steps.length; i++) {
@@ -163,34 +228,73 @@ export function buildDirections(route, t) {
 
     if (!curr || !seg) continue;
 
-    const floorName =
-      curr.floor === 0
-        ? t('hospital.floor_0_name')
-        : curr.floor === 1
-          ? t('hospital.floor_1_name')
-          : t('hospital.floor_2_name');
+    const floorKey = `hospital.floor_${curr.floor}_name`;
+    const floorName = safeT(floorKey);
+    const destName  = safeT(curr.nameKey);
 
-    const destName = t(curr.nameKey);
+    // Resolve edge hint: use i18n landmarkKey if available and translated, otherwise edge doorHint
+    let hint = '';
+    if (seg.landmarkKey) {
+      const translated = safeT(seg.landmarkKey);
+      if (translated && translated !== seg.landmarkKey) {
+        hint = translated;
+      }
+    }
+    if (!hint && seg.doorHint) {
+      hint = seg.doorHint;
+    }
 
-    if (seg.kind === 'lift' && curr.floor !== prev?.floor) {
-      directions.push(t('dir.takeLift', { floor: floorName }));
-    } else if (seg.kind === 'ramp' && curr.floor !== prev?.floor) {
-      directions.push(t('dir.takeRamp', { floor: floorName }));
-    } else if (seg.usesStairs && curr.floor !== prev?.floor) {
-      directions.push(t('dir.takeStairs', { floor: floorName }));
-    } else if (i === route.steps.length - 1) {
-      directions.push(t('dir.arrive', { dest: destName }));
+    const isFinalDestination = (i === route.steps.length - 1);
+
+    // Vertical transitions between different floors
+    if (curr.floor !== prev?.floor) {
+      if (seg.kind === 'lift') {
+        directions.push(safeT('dir.takeLift', { floor: floorName }));
+      } else if (seg.kind === 'ramp') {
+        directions.push(safeT('dir.takeRamp', { floor: floorName }));
+      } else {
+        directions.push(safeT('dir.takeStairs', { floor: floorName }));
+      }
+      continue;
+    }
+
+    // Destination step (final hop on the route)
+    if (isFinalDestination) {
+      if (hint) {
+        const text = safeT('dir.arriveWithHint', { dest: destName, hint });
+        // If template returned key without variable replacement, format directly
+        directions.push(text.includes('{dest}') ? `${destName} is ${hint}.` : text);
+      } else {
+        directions.push(safeT('dir.arrive', { dest: destName }));
+      }
+      continue;
+    }
+
+    // Intermediate horizontal steps along corridors or junctions
+    if (hint) {
+      if (seg.turn === 'left' || seg.turn === 'slight_left') {
+        const text = safeT('dir.turnLeftWithHint', { to: destName, hint, dist: seg.metres });
+        directions.push(text.includes('{to}') ? `Turn left towards ${destName} - ${hint}.` : text);
+      } else if (seg.turn === 'right' || seg.turn === 'slight_right') {
+        const text = safeT('dir.turnRightWithHint', { to: destName, hint, dist: seg.metres });
+        directions.push(text.includes('{to}') ? `Turn right towards ${destName} - ${hint}.` : text);
+      } else {
+        const text = safeT('dir.walkWithHint', { to: destName, hint, dist: seg.metres });
+        directions.push(text.includes('{to}') ? `Walk straight towards ${destName} - ${hint} (${seg.metres}m).` : text);
+      }
     } else {
-      const turnKey =
-        seg.turn === 'left'       ? 'dir.turnLeft'
-        : seg.turn === 'right'    ? 'dir.turnRight'
-        : 'dir.walkStraight';
-      directions.push(t(turnKey, { to: destName, dist: seg.metres }));
+      if (seg.turn === 'left' || seg.turn === 'slight_left') {
+        directions.push(safeT('dir.turnLeft', { to: destName, dist: seg.metres }));
+      } else if (seg.turn === 'right' || seg.turn === 'slight_right') {
+        directions.push(safeT('dir.turnRight', { to: destName, dist: seg.metres }));
+      } else {
+        directions.push(safeT('dir.walkStraight', { to: destName, dist: seg.metres }));
+      }
     }
   }
 
-  // Comfort tip at the end
-  directions.push(t('dir.askStaff'));
+  // Comforting safety guidance at the end
+  directions.push(safeT('dir.askStaff'));
 
   return directions;
 }
@@ -198,27 +302,74 @@ export function buildDirections(route, t) {
 /**
  * nearestOf(fromId, type, { avoidStairs })
  *
- * Finds the nearest place of the given `type` (e.g. 'toilet', 'lift', 'desk')
- * reachable from `fromId`.
+ * Finds the closest accessible place of the given type (e.g. 'help_desk', 'toilet')
+ * using Dijkstra on walking distance.
  *
- * Returns the place object or null if none found.
+ * @param {string} fromId - Starting place ID
+ * @param {string} type - Facility type or keyword (e.g. 'toilet', 'help_desk', 'water', 'lift')
+ * @param {Object} [options] - Options { avoidStairs: boolean }
+ * @returns {Object|null} Matching place object or null
  */
 export function nearestOf(fromId, type, { avoidStairs = false } = {}) {
-  if (!places[fromId]) return null;
+  const src = resolveId(fromId);
+  if (!src || !places[src]) return null;
 
   const adj = buildAdj(avoidStairs);
-  const { dist } = dijkstra(fromId, adj);
+  const { dist } = dijkstra(src, adj);
 
-  let best     = null;
+  const query = String(type || '').toLowerCase().trim();
+
+  let best = null;
   let bestDist = Infinity;
 
   for (const [id, place] of Object.entries(places)) {
-    if (id === fromId) continue;
-    if (place.type !== type) continue;
-    const d = dist[id];
-    if (isFinite(d) && d < bestDist) {
-      bestDist = d;
-      best     = place;
+    if (id === src) continue;
+
+    let isMatch = false;
+
+    // Direct type match
+    if (place.type === query) {
+      isMatch = true;
+    }
+    // Specific help desk queries
+    else if (query === 'help_desk' || query === 'helpdesk') {
+      isMatch = (place.id === 'g_help_desk' || place.type === 'help_desk');
+    }
+    // Toilet queries
+    else if (query === 'toilet' || query === 'toilets' || query === 'washroom') {
+      isMatch = (place.type === 'toilet' || place.id.includes('toilet'));
+    }
+    // Water queries
+    else if (query === 'water' || query === 'drinking_water') {
+      isMatch = (place.type === 'water' || place.id.includes('water'));
+    }
+    // Emergency / Casualty queries
+    else if (query === 'emergency' || query === 'casualty') {
+      isMatch = (place.type === 'emergency' || place.id.includes('casualty'));
+    }
+    // General desk queries
+    else if (query === 'desk') {
+      isMatch = (place.type === 'desk');
+    }
+    // General lift queries
+    else if (query === 'lift' || query === 'elevator') {
+      isMatch = (place.type === 'lift');
+    }
+    // General stairs queries
+    else if (query === 'stairs') {
+      isMatch = (place.type === 'stairs');
+    }
+    // Fallback: place id match
+    else if (place.id === query) {
+      isMatch = true;
+    }
+
+    if (isMatch) {
+      const d = dist[id];
+      if (isFinite(d) && d < bestDist) {
+        bestDist = d;
+        best = place;
+      }
     }
   }
 

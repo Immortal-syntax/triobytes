@@ -1,4 +1,4 @@
-﻿/**
+/**
  * OPD Saathi - English Translation Dictionary
  * Simple, reassuring, Grade 8 level wording.
  */
@@ -33,7 +33,7 @@ export const en = {
   // Settings
   'nav.settings': 'Settings',
   'settings.title': 'Accessibility & App Settings',
-  'settings.languageLabel': 'Choose Language / à¤­à¤¾à¤·à¤¾',
+  'settings.languageLabel': 'Choose Language / भाषा',
   'settings.textSizeLabel': 'Text Size',
   'settings.size1': '18px (Standard)',
   'settings.size2': '22px (Large)',
@@ -102,7 +102,7 @@ export const en = {
   'home.haveTokenBtn': 'Check My Turn',
   'home.kamlaDemoTitle': 'Quick Demo: Kamla (62 yrs)',
   'home.kamlaDemoDesc': 'Load sample scenario: Kamla visiting Orthopaedics (Knee pain), avoiding stairs.',
-  'home.kamlaDemoBtn': 'View Kamlaâ€™s OPD Slip',
+  'home.kamlaDemoBtn': 'View Kamla’s OPD Slip',
   'home.hospitalMapTitle': '3. Find Your Way (Map)',
   'home.hospitalMapDesc': 'Easy directions to rooms, lifts, ramps, water, and washrooms.',
   'home.hospitalMapBtn': 'Open Hospital Map',
@@ -126,7 +126,7 @@ export const en = {
   'reg.avoidStairsLabel': 'I avoid stairs / I prefer ramps and elevators (lifts)',
   'reg.avoidStairsDesc': 'Ideal for elderly visitors, knee pain, wheelchairs, or slow walking.',
   'reg.submitBtn': 'Create My OPD Slip & Token',
-  'reg.errorName': 'Please enter the patientâ€™s name.',
+  'reg.errorName': 'Please enter the patient’s name.',
   'reg.errorAge': 'Please enter a valid age.',
   'reg.errorDept': 'Please select a clinic.',
 
@@ -147,12 +147,12 @@ export const en = {
   'slip.trackBtn': 'Track Live Queue',
   'slip.mapBtn': 'Find Room on Map',
   'slip.printBtn': 'Save / Print Slip',
-  'slip.qrHelp': 'Show this screen or barcode when entering the doctorâ€™s room.',
+  'slip.qrHelp': 'Show this screen or barcode when entering the doctor’s room.',
 
   // Queue Tracker Screen
   'queue.title': 'Live OPD Queue Status',
   'queue.yourToken': 'Your Token',
-  'queue.nowServing': 'Currently in Doctorâ€™s Room',
+  'queue.nowServing': 'Currently in Doctor’s Room',
   'queue.aheadCount': 'People waiting ahead of you',
   'queue.estimatedWait': 'Estimated wait time',
   'queue.minutes': 'minutes',
@@ -286,8 +286,8 @@ export const en = {
   'dept.paediatrics.role': 'Child Specialist',
 
   'dept.gynae.name': 'Gynaecology & Maternity',
-  'dept.gynae.short': 'Womenâ€™s Health',
-  'dept.gynae.desc': 'Womenâ€™s health problems, pregnancy checkup, motherhood care',
+  'dept.gynae.short': 'Women’s Health',
+  'dept.gynae.desc': 'Women’s health problems, pregnancy checkup, motherhood care',
   'dept.gynae.symptoms': 'Pregnancy care, abdominal cramps, women health',
   'dept.gynae.role': 'Gynaecologist & Obstetrician',
 
@@ -313,6 +313,12 @@ export const en = {
   'dir.takeStairs': 'Climb the stairs to {floor}.',
   'dir.arrive': 'You have arrived at your destination: {dest}.',
   'dir.askStaff': 'If you feel tired or lost, any staff member in uniform will gladly help you.',
+
+  // Enhanced direction templates with hints
+  'dir.arriveWithHint': '{dest} is {hint}.',
+  'dir.walkWithHint': 'Walk straight towards {to} - {hint} ({dist}m).',
+  'dir.turnLeftWithHint': 'Turn left towards {to} - {hint}.',
+  'dir.turnRightWithHint': 'Turn right towards {to} - {hint}.',
 
   // Hospital floor names (routing & floor tabs)
   'hospital.floor_0_name':  'Ground Floor',
@@ -394,6 +400,50 @@ export const en = {
   'hospital.place_f2_ward_5_landmark': 'Double swinging doors marked Ward 5 (Surgery)',
   'hospital.place_f2_ward_6_name': 'Ward 6 - Children',
   'hospital.place_f2_ward_6_landmark': 'Doors with colourful animal illustrations',
+
+  // Edge landmarks (English)
+  'hospital.edge_entrance_wheelchair': 'right beside Gate 1 security',
+  'hospital.edge_entrance_help_desk': 'first counter on your right',
+  'hospital.edge_entrance_lobby': 'through the main glass doors',
+  'hospital.edge_entrance_ramp': 'gentle step-free incline towards the lift',
+  'hospital.edge_ramp_lift': 'step-free path directly to the lift doors',
+  'hospital.edge_lobby_casualty': 'follow the red emergency floor tape to Room E1',
+  'hospital.edge_lobby_reg': 'Counter 1 through 4 under the blue board',
+  'hospital.edge_reg_pharmacy': 'past counter 4 to medicine dispensary window',
+  'hospital.edge_lobby_water': 'beside the central corridor notice board',
+  'hospital.edge_water_lift': 'doors with braille buttons and audio chime',
+  'hospital.edge_water_stairs': 'wide staircase with yellow step edges',
+  'hospital.edge_lobby_toilets': 'marked with accessible wheelchair and gender symbols',
+  'hospital.edge_toilets_lab': 'door on your left marked Blood Collection / Pathology',
+  'hospital.edge_pharmacy_xray': 'heavy shielded door with radiation warning sign',
+  'hospital.edge_stairs_xray': 'end of the east corridor',
+  'hospital.edge_lift_lab': 'down the west corridor towards the lab',
+  'hospital.edge_lift_g_f1': 'exit the lift doors onto the first floor lobby',
+  'hospital.edge_lift_f1_f2': 'exit the lift doors onto the second floor lobby',
+  'hospital.edge_stairs_g_f1': 'climb 22 steps to the first floor landing',
+  'hospital.edge_stairs_f1_f2': 'climb 22 steps to the second floor landing',
+  'hospital.edge_f1_lift_waiting': 'into Waiting Hall A with rows of blue chairs',
+  'hospital.edge_f1_stairs_waiting': 'from stairs landing into central waiting area',
+  'hospital.edge_f1_waiting_toilets': 'at the far west end of the corridor',
+  'hospital.edge_f1_waiting_r1': 'first door on your left, marked General Medicine 1',
+  'hospital.edge_f1_waiting_r2': 'second door on your left, marked General Medicine 2',
+  'hospital.edge_f1_waiting_r3': 'third door on your left, opposite the blue chairs (Children)',
+  'hospital.edge_f1_waiting_r4': 'fourth door on your right, marked Women and Pregnancy',
+  'hospital.edge_f1_waiting_r5': 'fifth door at north-east end, marked Bones and Joints (Orthopaedics)',
+  'hospital.edge_f1_waiting_r6': 'south-east corner door, marked Ear, Nose & Throat',
+  'hospital.edge_f1_waiting_r7': 'south corridor door, marked Eyes (Ophthalmology)',
+  'hospital.edge_f1_waiting_r8': 'south-west corridor door, marked Skin Clinic',
+  'hospital.edge_f1_r1_r2': 'next door along the north corridor',
+  'hospital.edge_f1_r2_r3': 'next door along the north corridor',
+  'hospital.edge_f1_r3_r4': 'next door along the north corridor',
+  'hospital.edge_f1_r4_r5': 'next door along the north corridor',
+  'hospital.edge_f1_r6_r7': 'next door along the south corridor',
+  'hospital.edge_f1_r7_r8': 'next door along the south corridor',
+  'hospital.edge_f2_lift_nurse': 'open curved counter with staff and monitoring displays',
+  'hospital.edge_f2_stairs_nurse': 'into the central second floor reception',
+  'hospital.edge_f2_nurse_w4': 'double swinging doors marked Ward 4 (Medicine)',
+  'hospital.edge_f2_nurse_w5': 'double swinging doors marked Ward 5 (Surgery)',
+  'hospital.edge_f2_nurse_w6': 'doors with colorful animal illustrations, Ward 6 (Children)',
 
   // Dept keys for new IDs
   'dept.children.name': 'Children (Paediatrics)',
