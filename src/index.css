@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-size: 18px; /* Strict requirement: body text at least 18px */
+    font-family: 'Mukta', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  html.text-size-1,
+  html.text-normal {
+    font-size: 18px;
+  }
+
+  html.text-size-2,
+  html.text-large {
+    font-size: 22px;
+  }
+
+  html.text-size-3,
+  html.text-xlarge {
+    font-size: 26px;
+  }
+
+  /* Strict WCAG AA High Contrast Mode */
+  html.high-contrast {
+    filter: contrast(115%);
+  }
+
+  html.high-contrast body {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+
+  html.high-contrast .bg-white,
+  html.high-contrast .bg-slate-50,
+  html.high-contrast .bg-slate-100 {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+  }
+
+  html.high-contrast button {
+    border-color: #facc15 !important;
+  }
+
+  /* Accessible Visible Keyboard Focus Ring */
+  *:focus-visible {
+    outline: 4px solid #f59e0b !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Touch Target Constraint */
+  button, input, select, a {
+    touch-action: manipulation;
+  }
+}
