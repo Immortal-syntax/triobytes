@@ -206,4 +206,18 @@ export function getDepartmentById(deptId) {
   );
 }
 
+
+/**
+ * Calculates estimated wait time in minutes based on people ahead and department average consult time
+ * @param {number} peopleAhead 
+ * @param {string|object} deptIdOrDept 
+ * @returns {number} estimated wait minutes
+ */
+export function estimateWait(peopleAhead, deptIdOrDept) {
+  const dept = typeof deptIdOrDept === 'string' ? getDepartmentById(deptIdOrDept) : (deptIdOrDept || DEPARTMENTS[0]);
+  const avg = dept?.avgConsultTimeMinutes || 8;
+  return Math.max(0, Number(peopleAhead) || 0) * avg;
+}
+
 export default DEPARTMENTS;
+
