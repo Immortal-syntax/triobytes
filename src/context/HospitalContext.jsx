@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
-import { INITIAL_QUEUES, INITIAL_URGENT_ALERTS } from '../data/patients.js';
-import { DEPARTMENTS, getDepartmentById } from '../data/departments.js';
-import { useAccessibility } from './AccessibilityContext.jsx';
-import { useI18n } from './I18nContext.jsx';
+/**
+ * OPD Saathi - HospitalContext Re-export
+ *
+ * Forwards HospitalProvider and useHospital from src/lib/store.js
+ */
+
 
 const HospitalContext = createContext(null);
 
@@ -210,7 +211,7 @@ export function HospitalProvider({ children }) {
   }, []);
 
   // Register a new patient
-  const registerPatient = useCallback(({ name, age, gender, deptId, avoidStairs }) => {
+  const registerPatient = useCallback(({ name, age, gender, deptId, avoidStairs, mobile }) => {
     synth.init();
     const dept = getDepartmentById(deptId);
     const currentQ = queues[deptId] || { currentToken: 1, doctorStatus: 'available', tokens: [] };
@@ -230,6 +231,7 @@ export function HospitalProvider({ children }) {
       patientName: name.trim(),
       age: Number(age),
       gender: gender || 'female',
+      mobile: mobile ? mobile.trim() : '',
       deptId,
       room: dept.room,
       floor: dept.floor,
@@ -460,3 +462,6 @@ export function useHospital() {
   }
   return context;
 }
+
+export { HospitalProvider, useHospital } from '../lib/store.js';
+

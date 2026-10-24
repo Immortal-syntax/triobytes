@@ -334,6 +334,7 @@ export default function OpdSlipTokenPage() {
             </span>
           </div>
 
+
           {/* Department */}
           <div className="py-2.5 flex items-center justify-between gap-2">
             <span className="font-bold text-slate-600 dark:text-slate-400">
@@ -342,6 +343,17 @@ export default function OpdSlipTokenPage() {
             <span className="font-black text-hospital-700 dark:text-hospital-300 text-right">
               {t(dept.nameKey)}
             </span>
+
+          {tokenData.mobile && (
+            <div className="py-2.5 flex justify-between">
+              <span className="font-bold text-slate-600 dark:text-slate-400">Mobile:</span>
+              <span className="font-bold text-slate-900 dark:text-white">{tokenData.mobile}</span>
+            </div>
+          )}
+          <div className="py-2.5 flex justify-between">
+            <span className="font-bold text-slate-600 dark:text-slate-400">{t('slip.department')}:</span>
+            <span className="font-black text-hospital-700 dark:text-hospital-300 text-right">{t(dept.nameKey)}</span>
+
           </div>
 
           {/* Doctor Name */}

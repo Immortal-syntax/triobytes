@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:routing": "node scripts/test-routing.js",
+    "test:store": "node scripts/test-store.js"
   },
   "dependencies": {
     "qrcode-generator": "^2.0.4",

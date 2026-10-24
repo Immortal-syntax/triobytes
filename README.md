@@ -1,8 +1,9 @@
+
 # OPD Saathi (ओपीडी साथी) - City District Hospital
 
 **OPD Saathi** is an accessible, human-centered hackathon prototype web app built for the fictional **City District Hospital** (a 3-floor government hospital). It helps patients register for an Out-Patient Department (OPD) consultation, receive an OPD slip with a token, see their queue position, navigate accessible hospital routes with ramps and elevators, and know when to enter the doctor's room.
 
----
+
 
 ## 👵 Focus Persona: Kamla (62)
 - Visiting the hospital alone, reads limited Hindi.
@@ -10,7 +11,7 @@
 - Walks slowly with knee pain, strictly avoids stairs.
 - Needs clear guidance, reassuring tone, high contrast, audio read-aloud (`speechSynthesis`), and zero medical jargon.
 
----
+
 
 ## 🚨 Safety Rules (Highest Priority)
 1. **Always-On Emergency Button:** Visible on every screen (linking to `/emergency`). Instructs patients to go immediately to Casualty (Ground Floor Room E1), and provides one-tap dials for **112** and **108**.
@@ -18,7 +19,7 @@
 3. **"I Need Urgent Help" Broadcast Flag:** Sounds an audible alarm and flashes a red banner across all staff dashboards until acknowledged.
 4. **Privacy:** Strictly NO real Aadhaar or ABHA numbers collected.
 
----
+
 
 ## 🛠 Tech Stack
 - **Framework:** React 18 + Vite (Plain JavaScript, No TypeScript)
@@ -28,7 +29,7 @@
 - **Graphics:** Crisp inline SVGs for 3-floor architectural maps, icons, and barcode graphics (zero image downloads)
 - **Audio:** Web Speech API (`speechSynthesis`) and Web Audio API synthesizer for hospital chimes and alerts
 
----
+
 
 ## 🧭 Application Routes
 | Route | Description |
@@ -45,7 +46,6 @@
 | `/staff/counter` | **Doctor Counter Console:** Next Patient caller, recall chime, and absence skip controls. |
 | `/board` | **Waiting Hall TV Board:** Lobby monitor display with large numbers and digital clock. |
 
----
 
 ## 🚀 Running Locally
 ```bash
@@ -58,3 +58,7 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+# triobytes
+Cached info AI Hackathon project
+
