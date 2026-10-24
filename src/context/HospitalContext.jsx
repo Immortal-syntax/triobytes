@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
-import { INITIAL_QUEUES, INITIAL_URGENT_ALERTS } from '../data/patients.js';
-import { DEPARTMENTS, getDepartmentById } from '../data/departments.js';
-import { useAccessibility } from './AccessibilityContext.jsx';
-import { useI18n } from './I18nContext.jsx';
+/**
+ * OPD Saathi - HospitalContext Re-export
+ *
+ * Forwards HospitalProvider and useHospital from src/lib/store.js
+ */
+
 
 const HospitalContext = createContext(null);
 
@@ -461,3 +462,6 @@ export function useHospital() {
   }
   return context;
 }
+
+export { HospitalProvider, useHospital } from '../lib/store.js';
+

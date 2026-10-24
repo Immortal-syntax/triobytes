@@ -1,24 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useI18n } from '../../context/I18nContext.jsx';
 import { useHospital } from '../../context/HospitalContext.jsx';
 import { AlertIcon, CheckCircleIcon, CloseIcon, PhoneIcon } from './Icons.jsx';
 
+/**
+ * UrgentHelpModal – global overlay triggered from StaffDashboard or other contexts.
+ * On /emergency the inline panel in EmergencyPage is preferred, but this modal
+ * remains available for contexts outside /emergency.
+ */
 export default function UrgentHelpModal() {
   const { t } = useI18n();
   const { urgentHelpModalOpen, setUrgentHelpModalOpen, raiseUrgentHelpAlert } = useHospital();
   const [alertSent, setAlertSent] = useState(false);
+  const [isHelper, setIsHelper] = useState(false);
+
+  const handleConfirmAlert = useCallback(() => {
+    raiseUrgentHelpAlert({
+      reason: isHelper
+        ? 'Helper-raised urgent assistance request'
+        : 'Patient self-raised urgent assistance request',
+      isHelper,
+      createdAt: Date.now(),
+    });
+    setAlertSent(true);
+  }, [raiseUrgentHelpAlert, isHelper]);
+
+  const handleClose = useCallback(() => {
+    setAlertSent(false);
+    setIsHelper(false);
+    setUrgentHelpModalOpen(false);
+  }, [setUrgentHelpModalOpen]);
 
   if (!urgentHelpModalOpen) return null;
-
-  const handleConfirmAlert = () => {
-    raiseUrgentHelpAlert({ notes: 'Patient tapped urgent assistance alert button' });
-    setAlertSent(true);
-  };
-
-  const handleClose = () => {
-    setAlertSent(false);
-    setUrgentHelpModalOpen(false);
-  };
 
   return (
     <div
@@ -50,13 +63,23 @@ export default function UrgentHelpModal() {
         <div className="p-5 sm:p-6 space-y-4">
           {!alertSent ? (
             <>
+              {/* Helper toggle */}
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <input
+                  id="chk-modal-is-helper"
+                  type="checkbox"
+                  checked={isHelper}
+                  onChange={(e) => setIsHelper(e.target.checked)}
+                  className="w-5 h-5 rounded accent-emergency-600"
+                />
+                <span className="font-semibold text-base text-slate-800 dark:text-slate-100">
+                  {t('urgentHelp.helperToggle')}
+                </span>
+              </label>
+
               <p className="text-slate-800 dark:text-slate-100 font-semibold text-lg leading-relaxed">
                 {t('urgentHelp.modalBody')}
               </p>
-
-              <div className="bg-amber-50 border-2 border-amber-300 p-3 rounded-xl text-amber-900 text-base">
-                ⚠️ {t('emergency.urgentNotice')}
-              </div>
 
               <div className="space-y-3 pt-2">
                 <button
@@ -68,27 +91,26 @@ export default function UrgentHelpModal() {
                   <AlertIcon className="w-7 h-7" />
                   <span>{t('urgentHelp.confirmBtn')}</span>
                 </button>
-
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="w-full min-h-[56px] px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-lg rounded-xl flex items-center justify-center gap-2 focus:ring-4 focus:ring-slate-500 focus:outline-none"
+                  className="w-full min-h-[56px] px-6 py-3 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 font-bold text-lg rounded-xl flex items-center justify-center gap-2 focus:ring-4 focus:ring-slate-500 focus:outline-none"
                 >
                   <span>{t('urgentHelp.cancelBtn')}</span>
                 </button>
               </div>
             </>
           ) : (
-            <div className="space-y-4 text-center py-2">
-              <div className="w-16 h-16 bg-success-100 text-success-700 rounded-full flex items-center justify-center mx-auto">
+            <div className="space-y-4 text-center py-2" role="status" aria-live="polite">
+              <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircleIcon className="w-10 h-10" />
               </div>
 
-              <div className="bg-emerald-50 border-2 border-emerald-300 p-4 rounded-xl text-emerald-950 text-left space-y-2">
-                <p className="font-extrabold text-lg sm:text-xl">
+              <div className="bg-emerald-50 dark:bg-emerald-950/50 border-2 border-emerald-300 p-4 rounded-xl text-left space-y-2">
+                <p className="font-extrabold text-lg sm:text-xl text-emerald-900 dark:text-emerald-100">
                   {t('urgentHelp.alertSentBody')}
                 </p>
-                <p className="font-semibold text-base text-emerald-800">
+                <p className="font-semibold text-base text-emerald-800 dark:text-emerald-200">
                   🔔 {t('urgentHelp.soundNotice')}
                 </p>
               </div>
@@ -98,13 +120,13 @@ export default function UrgentHelpModal() {
                 className="w-full min-h-[56px] px-4 py-3 bg-emergency-600 hover:bg-emergency-700 text-white font-bold text-lg rounded-xl flex items-center justify-center gap-2 shadow focus:ring-4 focus:ring-amber-300 focus:outline-none"
               >
                 <PhoneIcon className="w-6 h-6" />
-                <span>Call 112 (Immediate Help)</span>
+                <span>{t('emergency.call112')}</span>
               </a>
 
               <button
                 type="button"
                 onClick={handleClose}
-                className="w-full min-h-[56px] px-6 py-3 bg-slate-800 text-white font-bold text-lg rounded-xl flex items-center justify-center gap-2 focus:ring-4 focus:ring-slate-500 focus:outline-none"
+                className="w-full min-h-[56px] px-6 py-3 bg-slate-800 dark:bg-slate-700 text-white font-bold text-lg rounded-xl flex items-center justify-center gap-2 focus:ring-4 focus:ring-slate-500 focus:outline-none"
               >
                 <span>{t('emergency.close')}</span>
               </button>
